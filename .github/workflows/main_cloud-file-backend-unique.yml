@@ -11,24 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      # 3️⃣ Install backend dependencies
+      - name: Install backend dependencies
         working-directory: cloud-file-backend
         run: npm install
 
+      # 4️⃣ Zip backend for deployment
       - name: Zip backend app
         working-directory: cloud-file-backend
         run: zip -r ../backend.zip .
 
+      # 5️⃣ Deploy to Azure Web App
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: cloud-file-backend-unique
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: backend.zip
